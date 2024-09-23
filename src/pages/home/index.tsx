@@ -2,8 +2,12 @@ import backgroundImageHomePageSvg from '../../assets/homepage/BackgroundImageHom
 import backgroundImageHomePageMobileSvg from '../../assets/homepage/backgroundImageHomePageMobile.svg'
 import fcSvg from '../../assets/homepage/FC.svg';
 import dimancheSvg from '../../assets/homepage/DIMANCHE.svg';
+import { useNavigate } from 'react-router-dom';
 
 const index = () => {
+
+  const navigate = useNavigate();
+
   return (
     <section
       className="bg-cover bg-center h-screen"
@@ -15,22 +19,27 @@ const index = () => {
             <img
               src={fcSvg}
               alt="FC"
-              className="mr-4 h-20 w-20 lg:h-40 lg:w-40"
+              className="lg:mr-4 h-20 w-20 lg:h-40 lg:w-40 animate-fcAnimation"
             />
             <img
               src={dimancheSvg}
               alt="DIMANCHE"
-              className="ml-4 h-72 w-72 lg:h-[30rem] lg:w-[30rem]"
+              className="ml-2 lg:ml-4 h-72 w-72 lg:h-[30rem] lg:w-[30rem] animate-dimancheAnimation opacity-0"
             />
           </div>
-          <div className="flex h-full w-full justify-center items-center">
-            <h1 className="text-[1.90rem] font-semibold text-[#FFFFFF]" style={{ textShadow: '2px 2px 6px black' }}>
+          <div className="lg:mt-2 flex h-1/2 w-full justify-center items-center animate-apparition opacity-0">
+            <h1
+              className="text-sm lg:text-[1.90rem] font-semibold text-[#FFFFFF] "
+              style={{ textShadow: "2px 2px 6px black" }}
+            >
               L’application parfaite pour organiser vos matchs entre amis !
             </h1>
           </div>
         </div>
-        <button className="border-solid border-[6px] border-[#FFFFFF] rounded-full p-4 w-80 h-28 text-3xl text-[#FFFFFF] font-semibold transition ease-in delay-50 hover:bg-[#04100D] hover:border-[#04100D]">
-          CREER VOTRE MATCH
+        <button onClick={() => navigate('/match-creation')} className="relative rounded-full p-4 w-80 h-28 text-3xl text-[#FFFFFF] font-semibold overflow-hidden group transition-colors duration-500 animate-apparitionButton opacity-0">
+          <span className="relative z-10">CREER VOTRE MATCH</span>
+          <div className="absolute inset-0 bg-[#04100D] transform translate-y-full transition-transform duration-500 ease-in-out group-hover:translate-y-0"></div>
+          <div className="absolute inset-0 border-[6px] border-[#FFFFFF] rounded-full transition-colors duration-500 ease-in-out group-hover:border-[#04100D]"></div>
         </button>
       </div>
     </section>

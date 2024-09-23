@@ -6,6 +6,8 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { fr } from 'date-fns/locale'; 
 import { setHours, setMinutes } from 'date-fns';
+import { createMatch } from '../../controllers/matchControllers';
+import { utils } from '../../utils/utils';
 
 
 const index = () => {
@@ -15,7 +17,7 @@ const index = () => {
       .required("Veuillez rentrer un nombre de joueurs.")
       .positive("Une valeur supérieur à 0 est requise."),
     matchLocation: string().required("Le lieu du match est requis."),
-    dateAndTimeOfMatch: date().required("La date et l'heure sont requis."),
+    matchDateTime: date().required("La date et l'heure sont requis."),
     organizerName: string().required("Un nom est requis."),
     organizerEmail: string()
       .required("Un mail est requis.")
@@ -34,7 +36,7 @@ const index = () => {
   } = useForm({
     resolver: yupResolver(matchCreation),
     defaultValues: {
-      dateAndTimeOfMatch: today, // Set default value to today
+      matchDateTime: today, // Set default value to today
     },
   });
 
@@ -42,10 +44,18 @@ const index = () => {
 
   type Match = InferType<typeof matchCreation>;
 
-  const onSubmit = (data: any) => {
-    console.log(data); // This will log all the form values
+  const onSubmit = async (data: any) => {
 
-    console.log('-->',data.dateAndTimeOfMatch.getTime())
+    let objDb = {
+      number_of_players: data.numberOfPlayers,
+      match_location: data.matchLocation,
+      match_datetime: utils.getUnixTimeStamp(data.matchDateTime),
+      organizer_name:data.organizerName,
+      organizer_email:data.organizerEmail
+    }; 
+
+    await createMatch(objDb)
+
   };
 
   return (
@@ -118,7 +128,7 @@ const index = () => {
               </label>
               <Controller
                 control={control}
-                name="dateAndTimeOfMatch"
+                name="matchDateTime"
                 render={({ field }) => {
                   const selectedDate = field.value || today; // Use today if no date is selected
 
@@ -153,11 +163,11 @@ const index = () => {
               />
               <span
                 className={`"flex items-center font-medium text-red-500 text-xs mt-1 transition duration-150 ease-in-out" ${
-                  errors.dateAndTimeOfMatch ? "opacity-100" : "opacity-0"
+                  errors.matchDateTime ? "opacity-100" : "opacity-0"
                 }`}
               >
-                {errors.dateAndTimeOfMatch
-                  ? errors.dateAndTimeOfMatch.message
+                {errors.matchDateTime
+                  ? errors.matchDateTime.message
                   : "Champs requis"}
               </span>
             </div>

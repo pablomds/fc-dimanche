@@ -94,7 +94,7 @@ export const getAllDataFromCollectionEvenDisable = async (collectionName: COLLEC
 };
 
 export const addDocumentToCollection = async (collectionName: COLLECTION, dataToCollection: any): Promise<string> => {
-    dataToCollection.creation_date = utils.getUnixTimeStamp(new Date());
+    dataToCollection.created_date = utils.getUnixTimeStamp(new Date());
     dataToCollection.updated_date = utils.getUnixTimeStamp(new Date());
     dataToCollection.is_active = true;
     const addedDocumentToCollection = collection(db, collectionName);    
@@ -110,6 +110,7 @@ export const updateDocumentToCollection = async (collectionName: string, dataToU
     await updateDoc(docRefToUpdate, dataToUpdate);
 
 };
+
 
 export const deleteDocumentFromCollection = async (collectionName: COLLECTION, dataToDeleteId: string): Promise<void> => {
     const docRefToDelete = doc(db, collectionName, dataToDeleteId)

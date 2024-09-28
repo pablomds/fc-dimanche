@@ -11,29 +11,30 @@ module.exports = {
       },
       keyframes: {
         fcAnimation: {
-          '0%': { transform: 'translateY(-100%) translateX(150%)' },  // Part du haut
-          '50%': { transform: 'translateY(-0%) translateX(150%)' },  // Part du haut
-          '100%': { transform: 'translateX(0%)' }     // Revient à la position d'origine
+          '0%': { transform: 'translateY(-100%) translateX(150%)' },  
+          '50%': { transform: 'translateY(-0%) translateX(150%)' },  
+          '100%': { transform: 'translateX(0%)' }     
         },
         dimancheAnimation: {
           '0%': { 
             opacity: '0',
             transform: 'translateX(-100%)' 
-          },  // Part de la gauche
-          '50%': { opacity: '1', transform: 'translateX(0)' },     // Atterrit à sa position initiale
-          '100%': { opacity: '1', transform: 'translateX(0)' }     // Reste en place pour finir
+          },  
+          '50%': { opacity: '1', transform: 'translateX(0)' },     
+          '100%': { opacity: '1', transform: 'translateX(0)' }     
         },
         apparitionAnimation: {
-          '0%': { opacity: '0', transform: 'translateY(100%)',},
-          '50%': { opacity: '0', transform: 'translateY(100%)',},
-          '100%': { opacity: '1', transform: 'translateY(0%)',}
+          '0%': { opacity: '0', transform: 'translateY(100%)', pointerEvents: 'none' },
+          '50%': { opacity: '0', transform: 'translateY(100%)', pointerEvents: 'none' },
+          '100%': { opacity: '1', transform: 'translateY(0%)', pointerEvents: 'auto'}
         }
       },
       animation: {
-        fcAnimation: 'fcAnimation 2s ease-in-out forwards',  // Animation du logo FC avec retour à la position initiale
-        dimancheAnimation: 'dimancheAnimation 2s ease-in-out 1s forwards',  // Animation du logo DIMANCHE avec un retour,
+        fcAnimation: 'fcAnimation 2s ease-in-out forwards',  
+        dimancheAnimation: 'dimancheAnimation 2s ease-in-out 1s forwards',  
         apparition: 'apparitionAnimation 1s ease-in-out 1.5s forwards',
-        apparitionButton: 'apparitionAnimation 1s ease-in-out 2s forwards',
+        apparitionFormMatchCreation: 'apparitionAnimation 0.5s ease-in-out',
+        apparitionButton: 'apparitionAnimation 2s forwards',
       }
     }
   },

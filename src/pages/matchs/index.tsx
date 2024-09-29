@@ -1,4 +1,6 @@
 import matchCreationBackgroundSvg from '../../assets/matchs/BackgroundMatchCreation.svg';
+import heroMatchCreationBackgroundMobileSvg from '../../assets/matchs/HeroMatchCreationMobile.svg';
+import FcMobileSvg from '../../assets/matchs/FcMobile.svg'
 import { useForm, Controller } from 'react-hook-form';
 import { object, string, number, date, InferType } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -6,16 +8,21 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { fr } from 'date-fns/locale'; 
 import { setHours, setMinutes } from 'date-fns';
-
+import { createMatch } from '../../controllers/matchControllers';
+import { utils } from '../../utils/utils';
+import { useNavigate } from 'react-router-dom';
 
 const index = () => {
+
+  const navigate = useNavigate();
+
   let matchCreation = object({
     numberOfPlayers: number()
       .typeError("Le nombre de joueurs doit être une valeur.")
       .required("Veuillez rentrer un nombre de joueurs.")
       .positive("Une valeur supérieur à 0 est requise."),
     matchLocation: string().required("Le lieu du match est requis."),
-    dateAndTimeOfMatch: date().required("La date et l'heure sont requis."),
+    matchDateTime: date().required("La date et l'heure sont requis."),
     organizerName: string().required("Un nom est requis."),
     organizerEmail: string()
       .required("Un mail est requis.")
@@ -29,12 +36,12 @@ const index = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     control,
   } = useForm({
     resolver: yupResolver(matchCreation),
     defaultValues: {
-      dateAndTimeOfMatch: today, // Set default value to today
+      matchDateTime: today, // Set default value to today
     },
   });
 
@@ -42,38 +49,70 @@ const index = () => {
 
   type Match = InferType<typeof matchCreation>;
 
-  const onSubmit = (data: any) => {
-    console.log(data); // This will log all the form values
+  const onSubmit = async (data: any) => {
 
-    console.log('-->',data.dateAndTimeOfMatch.getTime())
+    let objDb = {
+      number_of_players: data.numberOfPlayers,
+      match_location: data.matchLocation,
+      match_datetime: utils.getUnixTimeStamp(data.matchDateTime),
+      organizer_name: data.organizerName,
+      organizer_email: data.organizerEmail,
+      is_confirmed: false
+    }; 
+
+    return new Promise<void>(() => {
+      setTimeout(() => {
+        navigate('/match/confirmation')
+      }, 3000);
+    });
+
+    
+
+    // try {
+
+    //   await createMatch(objDb)
+
+    // } catch (error) {
+    //   console.log('error : ', error)
+    // }
+
   };
 
   return (
-    <section
-      className="bg-cover bg-center h-screen w-screen"
-      style={{ backgroundImage: `url(${matchCreationBackgroundSvg})` }}
-    >
-      <div className="w-full h-full flex items-center justify-center">
-        <div className="lg:w-1/4 lg:h-3/4 bg-[#FFFFFF] rounded-lg">
+    <section className="lg:bg-cover lg:bg-center lg:bg-img-match-creation h-screen w-screen overflow-y-hidden">
+      <div className="w-full h-full flex flex-col items-center lg:justify-center justify-start">
+        <div className="lg:hidden w-full flex justify-center relative sm:max-h-[303px]">
+          <img
+            src={heroMatchCreationBackgroundMobileSvg}
+            className="w-full object-cover"
+            alt="hero match creation"
+          />
+          <img
+            src={FcMobileSvg}
+            className="h-[100px] absolute bottom-[-40px] left-1/2 transform -translate-x-1/2 "
+            alt="FC svg"
+          />
+        </div>
+        <div className="lg:min-w-[555px] lg:w-1/4 lg:h-3/4 lg:h-min-[808px] lg:bg-[#FFFFFF]  shadow-xl rounded-lg lg:overflow-y-auto lg:mt-0 bg-img-match-creation-mobile bg-no-repeat bg-cover mt-6 animate-apparitionFormMatchCreation">
           <form
-            className="flex flex-col px-8 py-4"
+            className="flex flex-col px-6 py-4 text-left w-full"
             onSubmit={handleSubmit(onSubmit)}
           >
-            <div className="flex justify-center mt-8">
-              <h1 className="text-4xl font-semibold">Créez votre match</h1>
+            <div className="flex lg:justify-center mt-8 lg:mt-20 lg:mb-16">
+              <h1 className="lg:text-4xl text-2xl font-semibold">Créez votre match</h1>
             </div>
 
-            <div className="mt-10 flex flex-col group">
+            <div className="lg:mt-0 mt-8 flex flex-col group">
               <label
                 htmlFor="numberOfPlayers"
                 className="text-[#827C7C] text-sm font-medium transition-all duration-300 ease-in-out group-focus-within:text-[#04100D]"
               >
-                NOMBRE DE JOUEURS :{" "}
+                NOMBRE DE JOUEURS :
               </label>
               <input
                 type="text"
                 {...register("numberOfPlayers")}
-                className="border-b-2 solid border-[#827C7C] font-medium outline-none  transition-all duration-300 ease-in-out  focus:drop-shadow-lg"
+                className="border-b-2 solid border-[#827C7C] bg-transparent font-medium outline-none  transition-all duration-300 ease-in-out focus:drop-shadow-lg"
               />
               <span
                 className={`"flex items-center font-medium text-red-500 text-xs mt-1 transition duration-150 ease-in-out" ${
@@ -96,7 +135,7 @@ const index = () => {
               <input
                 type="text"
                 {...register("matchLocation")}
-                className="border-b-2 solid border-[#827C7C] font-medium outline-none  transition-all duration-300 ease-in-out  focus:drop-shadow-lg"
+                className="border-b-2 solid border-[#827C7C] bg-transparent font-medium outline-none  transition-all duration-300 ease-in-out  focus:drop-shadow-lg"
               />
               <span
                 className={`"flex items-center font-medium text-red-500 text-xs mt-1 transition duration-150 ease-in-out" ${
@@ -112,19 +151,19 @@ const index = () => {
             <div className="mt-4 flex flex-col group">
               <label
                 htmlFor="dateAndTimeOfMatch"
-                className="text-[#827C7C] text-sm font-medium transition-all duration-300 ease-in-out group-focus-within:text-[#04100D]"
+                className="text-[#827C7C] bg-transparent text-sm font-medium transition-all duration-300 ease-in-out group-focus-within:text-[#04100D]"
               >
                 DATE ET HEURE DU MATCH :
               </label>
               <Controller
                 control={control}
-                name="dateAndTimeOfMatch"
+                name="matchDateTime"
                 render={({ field }) => {
                   const selectedDate = field.value || today; // Use today if no date is selected
 
                   return (
                     <DatePicker
-                      className="border-b-2 solid border-[#827C7C] font-medium outline-none transition-all duration-300 ease-in-out focus:drop-shadow-lg w-full"
+                      className="border-b-2 solid border-[#827C7C] bg-transparent font-medium outline-none transition-all duration-300 ease-in-out focus:drop-shadow-lg w-full"
                       onChange={(date) => field.onChange(date)}
                       locale={fr}
                       selected={field.value || today}
@@ -146,18 +185,18 @@ const index = () => {
                       dateFormat="dd/MM/yyyy HH:mm" // Format the displayed value in the picker
                       onKeyDown={(e) => {
                         e.preventDefault();
-                     }}
+                      }}
                     />
                   );
                 }}
               />
               <span
                 className={`"flex items-center font-medium text-red-500 text-xs mt-1 transition duration-150 ease-in-out" ${
-                  errors.dateAndTimeOfMatch ? "opacity-100" : "opacity-0"
+                  errors.matchDateTime ? "opacity-100" : "opacity-0"
                 }`}
               >
-                {errors.dateAndTimeOfMatch
-                  ? errors.dateAndTimeOfMatch.message
+                {errors.matchDateTime
+                  ? errors.matchDateTime.message
                   : "Champs requis"}
               </span>
             </div>
@@ -172,7 +211,7 @@ const index = () => {
               <input
                 type="text"
                 {...register("organizerName")}
-                className="border-b-2 solid border-[#827C7C] font-medium outline-none  transition-all duration-300 ease-in-out  focus:drop-shadow-lg"
+                className="border-b-2 solid border-[#827C7C] bg-transparent font-medium outline-none  transition-all duration-300 ease-in-out  focus:drop-shadow-lg"
               />
               <span
                 className={`"flex items-center font-medium text-red-500 text-xs mt-1 transition duration-150 ease-in-out" ${
@@ -195,7 +234,7 @@ const index = () => {
               <input
                 type="email"
                 {...register("organizerEmail")}
-                className="border-b-2 solid border-[#827C7C] font-medium outline-none  transition-all duration-300 ease-in-out  focus:drop-shadow-lg"
+                className="border-b-2 solid border-[#827C7C] bg-transparent font-medium outline-none  transition-all duration-300 ease-in-out  focus:drop-shadow-lg"
               />
               <span
                 className={`"flex items-center font-medium text-red-500 text-xs mt-1" ${
@@ -208,12 +247,20 @@ const index = () => {
               </span>
             </div>
 
-            <div className="my-8 flex justify-center">
+            <div className="my-8 lg:my-14 flex justify-center">
               <button
                 type="submit"
                 className="drop-shadow-2xl rounded-full p-4 w-72 h-20 text-xl text-[#FFFFFF] bg-gradient-to-r from-[#3B7214] via-[#5B8E2A] to-[#7AAB40] font-semibold transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 duration-300"
               >
-                CRÉER LE MATCH
+                {isSubmitting ? (
+                  <div className="flex space-x-2 justify-center items-center">
+                    <div className="h-4 w-4 bg-white rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                    <div className="h-4 w-4 bg-white rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                    <div className="h-4 w-4 bg-white rounded-full animate-bounce"></div>
+                  </div>
+                ) : (
+                  "CRÉER LE MATCH"
+                )}
               </button>
             </div>
           </form>

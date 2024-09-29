@@ -27,16 +27,16 @@ const index = () => {
               className="ml-2 lg:ml-4 h-72 w-72 lg:h-[30rem] lg:w-[30rem] animate-dimancheAnimation opacity-0"
             />
           </div>
-          <div className="lg:mt-2 flex h-1/2 w-full justify-center items-center animate-apparition opacity-0">
+          <div className="lg:mt-2 h-1/2 w-full flex justify-center text-center animate-apparition opacity-0">
             <h1
-              className="text-sm lg:text-[1.90rem] font-semibold text-[#FFFFFF] "
+              className="text-xl md:text-2xl lg:text-[1.90rem] font-semibold text-[#FFFFFF] mx-2"
               style={{ textShadow: "2px 2px 6px black" }}
             >
               L’application parfaite pour organiser vos matchs entre amis !
             </h1>
           </div>
         </div>
-        <button onClick={() => navigate('/match-creation')} className="relative rounded-full p-4 w-80 h-28 text-3xl text-[#FFFFFF] font-semibold overflow-hidden group transition-colors duration-500 animate-apparitionButton opacity-0">
+        <button onClick={() => navigate('/match/creation')} className="relative rounded-full p-4 w-80 h-28 text-3xl text-[#FFFFFF] font-semibold overflow-hidden group transition-colors duration-500 animate-apparitionButton opacity-0">
           <span className="relative z-10">CREER VOTRE MATCH</span>
           <div className="absolute inset-0 bg-[#04100D] transform translate-y-full transition-transform duration-500 ease-in-out group-hover:translate-y-0"></div>
           <div className="absolute inset-0 border-[6px] border-[#FFFFFF] rounded-full transition-colors duration-500 ease-in-out group-hover:border-[#04100D]"></div>

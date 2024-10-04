@@ -1,21 +1,20 @@
-import matchCreationBackgroundSvg from '../../assets/matchs/BackgroundMatchCreation.svg';
 import heroMatchCreationBackgroundMobileSvg from '../../assets/matchs/HeroMatchCreationMobile.svg';
 import FcMobileSvg from '../../assets/matchs/FcMobile.svg'
 import { useForm, Controller } from 'react-hook-form';
-import { object, string, number, date, InferType } from 'yup';
+import { object, string, number, date } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { createMatch } from '../../controllers/matchControllers';
 import { utils } from '../../utils/utils';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import { sendEmailConfirmation } from '../../controllers/matchControllers';
-import { setHours, setMinutes, getHours, getMinutes, addMinutes } from "date-fns";
+import { setHours, setMinutes } from "date-fns";
 import { fr } from "date-fns/locale";
 
 const index = () => {
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   let matchCreation = object({
     numberOfPlayers: number()
@@ -67,7 +66,7 @@ const index = () => {
     },
   });
 
-  type Match = InferType<typeof matchCreation>;
+  // type Match = InferType<typeof matchCreation>;
 
   const onSubmit = async (data: any) => {
 

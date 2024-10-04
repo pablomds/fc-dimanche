@@ -1,37 +1,58 @@
-import matchCreationBackgroundSvg from '../../assets/matchs/BackgroundMatchCreation.svg';
 import heroMatchCreationBackgroundMobileSvg from '../../assets/matchs/HeroMatchCreationMobile.svg';
 import FcMobileSvg from '../../assets/matchs/FcMobile.svg'
 import { useForm, Controller } from 'react-hook-form';
-import { object, string, number, date, InferType } from 'yup';
+import { object, string, number, date } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { fr } from 'date-fns/locale'; 
-import { setHours, setMinutes } from 'date-fns';
 import { createMatch } from '../../controllers/matchControllers';
 import { utils } from '../../utils/utils';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
+import { sendEmailConfirmation } from '../../controllers/matchControllers';
+import { setHours, setMinutes } from "date-fns";
+import { fr } from "date-fns/locale";
 
 const index = () => {
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   let matchCreation = object({
     numberOfPlayers: number()
       .typeError("Le nombre de joueurs doit être une valeur.")
       .required("Veuillez rentrer un nombre de joueurs.")
+      .min(2, "Vous devez être minimun deux pour le match.")
+      .max(100, "Vous pouvez être maximun 100.")
       .positive("Une valeur supérieur à 0 est requise."),
-    matchLocation: string().required("Le lieu du match est requis."),
-    matchDateTime: date().required("La date et l'heure sont requis."),
-    organizerName: string().required("Un nom est requis."),
-    organizerEmail: string()
+    matchLocation: string()
+      .required("Le lieu du match est requis.")
+      .min(1, "L'adresse doit contenir au moins 1 caractère.")
+      .max(50, "L'adresse doit contenir moins de 50 caractères.")
+      .transform(value => value.trim()),
+    matchDateTime: date()
+      .required("La date et l'heure sont requis.")
+      .test("is-future-date", "La date doit être dans le futur.", (value) => {
+        return value ? value > new Date() : false; // Check if the date is in the future
+      }),
+    name: string().required("Un nom est requis.").min(1, "Le nom doit contenir au moins 1 caractère.").max(50, "Le nom doit contenir moins de 50 caractères").transform(value => value.trim()),
+    email: string()
       .required("Un mail est requis.")
-      .email("L'email doit être valide"),
+      .email("L'email doit être valide")
+      .min(3, "L'adresse email doit contenir au moins 3 caractères.")
+      .max(254, "L'adresse email ne peut pas dépasser 254 caractères."),
   });
 
   const today = new Date();
   const currentHour = today.getHours();
   const currentMinute = today.getMinutes();
+
+  const roundUpToNext15 = (date: Date) => {
+    const minutes = date.getMinutes();
+    const roundedMinutes = Math.ceil(minutes / 15) * 15;
+    // If rounded minutes equals 60, we reset it to 0 and increment the hour
+    return roundedMinutes === 60 
+        ? setHours(setMinutes(date, 0), date.getHours() + 1) 
+        : setMinutes(setHours(date, date.getHours()), roundedMinutes);
+};
 
   const {
     register,
@@ -41,13 +62,11 @@ const index = () => {
   } = useForm({
     resolver: yupResolver(matchCreation),
     defaultValues: {
-      matchDateTime: today, // Set default value to today
+      matchDateTime: roundUpToNext15(new Date()),
     },
   });
 
-
-
-  type Match = InferType<typeof matchCreation>;
+  // type Match = InferType<typeof matchCreation>;
 
   const onSubmit = async (data: any) => {
 
@@ -55,27 +74,51 @@ const index = () => {
       number_of_players: data.numberOfPlayers,
       match_location: data.matchLocation,
       match_datetime: utils.getUnixTimeStamp(data.matchDateTime),
-      organizer_name: data.organizerName,
-      organizer_email: data.organizerEmail,
-      is_confirmed: false
-    }; 
+      name: data.name,
+      email: data.email,
+      is_confirmed: false,
+    };
 
-    return new Promise<void>(() => {
-      setTimeout(() => {
-        navigate('/match/confirmation')
-      }, 3000);
-    });
+    let year = data.matchDateTime.getFullYear() % 100; 
+    let month = data.matchDateTime.getMonth() + 1; 
+    let day = data.matchDateTime.getDate();
 
-    
+    let hours = data.matchDateTime.getHours(); 
+    let minutes = data.matchDateTime.getMinutes();
 
-    // try {
+    try {
 
-    //   await createMatch(objDb)
+      const newMatchId = await createMatch(objDb);
 
-    // } catch (error) {
-    //   console.log('error : ', error)
-    // }
+      if (!newMatchId) return;
 
+      const email = data.email;
+      const name = data.name;
+      const matchLocation = data.matchLocation;
+      const matchTime = `${hours}:${minutes}` ;
+      const matchDate = `${day < 10 ? '0' + day : day }/${month}/${year}`;
+      const confirmationLink = `${import.meta.env.VITE_BASE_URL}/match/confirmation?${newMatchId}`;
+
+      const response = await sendEmailConfirmation({
+        email,
+        matchLocation,
+        name,
+        matchTime,
+        matchDate,
+        confirmationLink,
+      });
+
+      if (import.meta.env.VITE_ENV === 'dev') {
+        if (response.success) {
+          console.log("Email sent successfully");
+        } else {
+          console.log("Failed to send email:", response.message);
+        }
+      }
+
+    } catch (error) {
+      if (import.meta.env.VITE_ENV === 'dev') console.log("Something went wrong:", error);
+    }
   };
 
   return (
@@ -110,9 +153,11 @@ const index = () => {
                 NOMBRE DE JOUEURS :
               </label>
               <input
-                type="text"
+                type="number"
                 {...register("numberOfPlayers")}
                 className="border-b-2 solid border-[#827C7C] bg-transparent font-medium outline-none  transition-all duration-300 ease-in-out focus:drop-shadow-lg"
+                pattern="[0-9]*" 
+                inputMode="numeric" 
               />
               <span
                 className={`"flex items-center font-medium text-red-500 text-xs mt-1 transition duration-150 ease-in-out" ${
@@ -135,6 +180,7 @@ const index = () => {
               <input
                 type="text"
                 {...register("matchLocation")}
+                maxLength={50}
                 className="border-b-2 solid border-[#827C7C] bg-transparent font-medium outline-none  transition-all duration-300 ease-in-out  focus:drop-shadow-lg"
               />
               <span
@@ -159,14 +205,15 @@ const index = () => {
                 control={control}
                 name="matchDateTime"
                 render={({ field }) => {
-                  const selectedDate = field.value || today; // Use today if no date is selected
 
+                  const selectedDate = field.value ? field.value : new Date();
+                
                   return (
                     <DatePicker
                       className="border-b-2 solid border-[#827C7C] bg-transparent font-medium outline-none transition-all duration-300 ease-in-out focus:drop-shadow-lg w-full"
                       onChange={(date) => field.onChange(date)}
                       locale={fr}
-                      selected={field.value || today}
+                      selected={selectedDate}
                       showTimeSelect
                       timeFormat="HH:mm"
                       timeIntervals={15}
@@ -203,46 +250,46 @@ const index = () => {
 
             <div className="mt-4 flex flex-col group">
               <label
-                htmlFor="organizerName"
+                htmlFor="name"
                 className="text-[#827C7C] text-sm font-medium transition-all duration-300 ease-in-out group-focus-within:text-[#04100D]"
               >
                 NOM DE L'ORGANISATEUR :
               </label>
               <input
                 type="text"
-                {...register("organizerName")}
+                {...register("name")}
                 className="border-b-2 solid border-[#827C7C] bg-transparent font-medium outline-none  transition-all duration-300 ease-in-out  focus:drop-shadow-lg"
               />
               <span
                 className={`"flex items-center font-medium text-red-500 text-xs mt-1 transition duration-150 ease-in-out" ${
-                  errors.organizerName ? "opacity-100" : "opacity-0"
+                  errors.name ? "opacity-100" : "opacity-0"
                 }`}
               >
-                {errors.organizerName
-                  ? errors.organizerName.message
+                {errors.name
+                  ? errors.name.message
                   : "Champs requis"}
               </span>
             </div>
 
             <div className="mt-4 flex flex-col group">
               <label
-                htmlFor="organizerEmail"
+                htmlFor="email"
                 className="text-[#827C7C] text-sm font-medium transition-all duration-300 ease-in-out group-focus-within:text-[#04100D]"
               >
                 MAIL DE L'ORGANISATEUR :
               </label>
               <input
                 type="email"
-                {...register("organizerEmail")}
+                {...register("email")}
                 className="border-b-2 solid border-[#827C7C] bg-transparent font-medium outline-none  transition-all duration-300 ease-in-out  focus:drop-shadow-lg"
               />
               <span
                 className={`"flex items-center font-medium text-red-500 text-xs mt-1" ${
-                  errors.organizerEmail?.message ? "opacity-100" : "opacity-0"
+                  errors.email?.message ? "opacity-100" : "opacity-0"
                 }`}
               >
-                {errors.organizerEmail
-                  ? errors.organizerEmail.message
+                {errors.email
+                  ? errors.email.message
                   : "Champ requis"}
               </span>
             </div>

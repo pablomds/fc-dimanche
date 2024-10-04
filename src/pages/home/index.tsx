@@ -1,5 +1,4 @@
 import backgroundImageHomePageSvg from '../../assets/homepage/BackgroundImageHomePage.svg';
-import backgroundImageHomePageMobileSvg from '../../assets/homepage/backgroundImageHomePageMobile.svg'
 import fcSvg from '../../assets/homepage/FC.svg';
 import dimancheSvg from '../../assets/homepage/DIMANCHE.svg';
 import { useNavigate } from 'react-router-dom';

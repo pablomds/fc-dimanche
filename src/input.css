@@ -4,6 +4,19 @@
 @tailwind utilities;
 
 @layer components {
+  
+    /* Custom CSS to remove the arrows */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  
+    /* Firefox */
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+
     .bg-img-match-creation {
       background-image: url('./assets/matchs/BackgroundMatchCreation.svg');
     }

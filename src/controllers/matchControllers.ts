@@ -1,6 +1,6 @@
-import { addDocumentToCollection, deleteDocumentFromCollection, updateDocumentToCollection  } from "../database/functions";
+import { addDocumentToCollection, deleteDocumentFromCollection  } from "../database/functions";
 import { COLLECTION } from "../database/collection";
-import { utils } from "../utils/utils";
+// import { utils } from "../utils/utils";
 import { functions } from '../database/firebase';
 import { httpsCallable } from 'firebase/functions';
 import _ from "lodash";

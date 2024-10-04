@@ -1,10 +1,6 @@
 import { useRef, useState } from 'react';
 import confirmationIconMatchCreationSvg from '../../assets/matchs/ConfirmationIconMatchCreation.svg';
-import { AiFillCopy } from "react-icons/ai";
-import { IoMdShare } from "react-icons/io";
-import { FaShareNodes } from "react-icons/fa6";
 import { IoIosShareAlt } from "react-icons/io";
-import { FaShare } from "react-icons/fa";
 import { IoIosCopy } from "react-icons/io";
 
 

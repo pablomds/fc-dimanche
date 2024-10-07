@@ -132,16 +132,16 @@ const index = () => {
           />
           <img
             src={FcMobileSvg}
-            className="h-[100px] absolute bottom-[-40px] left-1/2 transform -translate-x-1/2 "
+            className="h-[100px] absolute bottom-[-40px] left-1/2 transform -translate-x-1/2"
             alt="FC svg"
           />
         </div>
-        <div className="lg:min-w-[555px] lg:w-1/4 lg:h-3/4 lg:h-min-[808px] lg:bg-[#FFFFFF]  shadow-xl rounded-lg lg:overflow-y-auto lg:mt-0 bg-img-match-creation-mobile bg-no-repeat bg-cover mt-6 animate-apparitionFormMatchCreation">
+        <div className="lg:min-w-[555px] lg:w-1/4 lg:h-4/5 xl:h-3/4 lg:h-min-[808px] lg:bg-[#FFFFFF] shadow-xl rounded-lg lg:overflow-y-auto custom-scroll lg:mt-0 mt-6 bg-img-match-creation-mobile bg-no-repeat bg-cover  animate-apparitionFormMatchCreation">
           <form
             className="flex flex-col px-6 py-4 text-left w-full"
             onSubmit={handleSubmit(onSubmit)}
           >
-            <div className="flex lg:justify-center mt-8 lg:mt-20 lg:mb-16">
+            <div className="flex lg:justify-center mt-8 lg:mt-14 lg:mb-14">
               <h1 className="lg:text-4xl text-2xl font-semibold">Créez votre match</h1>
             </div>
 
@@ -294,7 +294,7 @@ const index = () => {
               </span>
             </div>
 
-            <div className="my-8 lg:my-14 flex justify-center">
+            <div className="my-8 lg:my-5 flex justify-center">
               <button
                 type="submit"
                 className="drop-shadow-2xl rounded-full p-4 w-72 h-20 text-xl text-[#FFFFFF] bg-gradient-to-r from-[#3B7214] via-[#5B8E2A] to-[#7AAB40] font-semibold transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 duration-300"

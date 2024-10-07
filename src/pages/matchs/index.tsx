@@ -122,8 +122,8 @@ const index = () => {
   };
 
   return (
-    <section className="lg:bg-cover lg:bg-center lg:bg-img-match-creation h-screen w-screen md:overflow-y-hidden custom-scroll">
-      <div className="w-full h-full flex flex-col items-center lg:justify-center justify-start">
+    <section className="lg:bg-cover lg:bg-center lg:bg-img-match-creation h-screen w-screen ">
+      <div className="w-full h-full flex flex-col items-center lg:justify-center justify-start md:overflow-y-hidden custom-scroll">
         <div className="lg:hidden w-full flex justify-center relative sm:max-h-[303px]">
           <img
             src={heroMatchCreationBackgroundMobileSvg}

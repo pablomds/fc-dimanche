@@ -6,8 +6,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { createMatch } from '../../controllers/matchControllers';
-import { utils } from '../../utils/utils';
-// import { useNavigate } from 'react-router-dom';
 import { sendEmailConfirmation } from '../../controllers/matchControllers';
 import { setHours, setMinutes } from "date-fns";
 import { fr } from "date-fns/locale";

@@ -15,7 +15,7 @@ import { TbCalendarClock } from "react-icons/tb";
 
 const confirmation = () => {
   const [isHighlighted, setIsHighlighted] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  // const [isLoading, setIsLoading] = useState<boolean>(false);
   const [invitationLink, setInvitationLink] = useState<string>("");
   const [isMatchNotFound, setIsMatchNotFound] = useState<boolean>(false);
   const [isEventDatePassed, setIsEventDatePassed] = useState<boolean>(false);
@@ -58,7 +58,7 @@ const confirmation = () => {
   };
 
   useEffect(() => {
-    setIsLoading(true);
+    // setIsLoading(true);
 
     const fetchData = async () => {
       try {
@@ -95,7 +95,7 @@ const confirmation = () => {
       } catch (error) {
         console.error("Erreur lors de la confirmation", error);
       } finally {
-        setIsLoading(false); // Ensure loading state is handled properly
+        // setIsLoading(false);
       }
     };
   

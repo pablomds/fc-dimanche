@@ -10,7 +10,9 @@ import { utils } from "../utils/utils"
 export const getDataFromCollection = async (collectionName: COLLECTION, dataId: string) => {
     const docRef = doc(db, collectionName, dataId);
     const docSnap = await getDoc(docRef);
-    return { ...docSnap.data(), id: docSnap.id }
+    if (docSnap.exists()) return { ...docSnap.data(), id: docRef.id };   
+    return {}; 
+    
 };
 
 export const getAllDataFromCollectionCreatedByUser = async (collectionName: COLLECTION, userId: string) => {
@@ -105,7 +107,7 @@ export const addDocumentToCollection = async (collectionName: COLLECTION, dataTo
 
 export const updateDocumentToCollection = async (collectionName: string, dataToUpdateId: string, dataToUpdate: any) => {
     dataToUpdate.updated_date = utils.getUnixTimeStamp(new Date());
-
+    console.log('-->',dataToUpdate)
     const docRefToUpdate = doc(db, collectionName, dataToUpdateId);
     await updateDoc(docRefToUpdate, dataToUpdate);
 

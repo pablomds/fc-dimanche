@@ -11,24 +11,25 @@ import { utils } from '../../utils/utils';
 import { sendEmailConfirmation } from '../../controllers/matchControllers';
 import { setHours, setMinutes } from "date-fns";
 import { fr } from "date-fns/locale";
+import { Match } from '../../models/Match';
 
 const index = () => {
 
   // const navigate = useNavigate();
 
-  let matchCreation = object({
+  let matchCreationSchema = object({
     numberOfPlayers: number()
       .typeError("Le nombre de joueurs doit être une valeur.")
       .required("Veuillez rentrer un nombre de joueurs.")
       .min(2, "Vous devez être minimun deux pour le match.")
       .max(100, "Vous pouvez être maximun 100.")
       .positive("Une valeur supérieur à 0 est requise."),
-    matchLocation: string()
+    eventLocation: string()
       .required("Le lieu du match est requis.")
       .min(1, "L'adresse doit contenir au moins 1 caractère.")
       .max(50, "L'adresse doit contenir moins de 50 caractères.")
       .transform(value => value.trim()),
-    matchDateTime: date()
+    eventDateTime: date()
       .required("La date et l'heure sont requis.")
       .test("is-future-date", "La date doit être dans le futur.", (value) => {
         return value ? value > new Date() : false; // Check if the date is in the future
@@ -60,44 +61,39 @@ const index = () => {
     formState: { errors, isSubmitting },
     control,
   } = useForm({
-    resolver: yupResolver(matchCreation),
+    resolver: yupResolver(matchCreationSchema),
     defaultValues: {
-      matchDateTime: roundUpToNext15(new Date()),
+      eventDateTime: roundUpToNext15(new Date()),
     },
   });
 
-  // type Match = InferType<typeof matchCreation>;
+  // type Match = InferType<typeof matchCreationSchema>;
 
   const onSubmit = async (data: any) => {
 
-    let objDb = {
-      number_of_players: data.numberOfPlayers,
-      match_location: data.matchLocation,
-      match_datetime: utils.getUnixTimeStamp(data.matchDateTime),
-      name: data.name,
-      email: data.email,
-      is_confirmed: false,
-    };
+    let newMatch = new Match(data);
+    const eventDateTime = data.eventDateTime;
 
-    let year = data.matchDateTime.getFullYear() % 100; 
-    let month = data.matchDateTime.getMonth() + 1; 
-    let day = data.matchDateTime.getDate();
+    let year = eventDateTime.getFullYear() % 100; 
+    let month = eventDateTime.getMonth() + 1; 
+    let day = eventDateTime.getDate();
 
-    let hours = data.matchDateTime.getHours(); 
-    let minutes = data.matchDateTime.getMinutes();
+    let hours = eventDateTime.getHours(); 
+    let minutes = eventDateTime.getMinutes();
+
 
     try {
 
-      const newMatchId = await createMatch(objDb);
+      newMatch.id = await createMatch(newMatch.toDb());
 
-      if (!newMatchId) return;
+      if (!newMatch.id) return;
 
-      const email = data.email;
-      const name = data.name;
-      const matchLocation = data.matchLocation;
-      const matchTime = `${hours}:${minutes}` ;
+      const email = newMatch.email;
+      const name = newMatch.name;
+      const matchLocation = newMatch.eventLocation;
+      const matchTime = `${hours < 10 ? '0' + hours : hours }:${minutes < 10 ? '0' + minutes : minutes}` ;
       const matchDate = `${day < 10 ? '0' + day : day }/${month}/${year}`;
-      const confirmationLink = `${import.meta.env.VITE_BASE_URL}/match/confirmation?${newMatchId}`;
+      const confirmationLink = `${import.meta.env.VITE_BASE_URL}/match/confirmation?${newMatch.id}`;
 
       const response = await sendEmailConfirmation({
         email,
@@ -122,7 +118,7 @@ const index = () => {
   };
 
   return (
-    <section className="lg:bg-cover lg:bg-center lg:bg-img-match-creation h-screen w-screen ">
+    <section className="lg:bg-cover lg:bg-center lg:bg-img-match-creation h-screen w-screen">
       <div className="w-full h-full flex flex-col items-center lg:justify-center justify-start md:overflow-y-hidden custom-scroll">
         <div className="lg:hidden w-full flex justify-center relative sm:max-h-[303px]">
           <img
@@ -172,24 +168,24 @@ const index = () => {
 
             <div className="mt-4 flex flex-col group">
               <label
-                htmlFor="matchLocation"
+                htmlFor="eventLocation"
                 className="text-[#827C7C] text-sm font-medium transition-all duration-300 ease-in-out group-focus-within:text-[#04100D]"
               >
                 LIEU DU MATCH :
               </label>
               <input
                 type="text"
-                {...register("matchLocation")}
+                {...register("eventLocation")}
                 maxLength={50}
                 className="border-b-2 solid border-[#827C7C] bg-transparent font-medium outline-none  transition-all duration-300 ease-in-out  focus:drop-shadow-lg"
               />
               <span
                 className={`"flex items-center font-medium text-red-500 text-xs mt-1 transition duration-150 ease-in-out" ${
-                  errors.matchLocation ? "opacity-100" : "opacity-0"
+                  errors.eventLocation ? "opacity-100" : "opacity-0"
                 }`}
               >
-                {errors.matchLocation
-                  ? errors.matchLocation.message
+                {errors.eventLocation
+                  ? errors.eventLocation.message
                   : "Champs requis"}
               </span>
             </div>
@@ -203,7 +199,7 @@ const index = () => {
               </label>
               <Controller
                 control={control}
-                name="matchDateTime"
+                name="eventDateTime"
                 render={({ field }) => {
 
                   const selectedDate = field.value ? field.value : new Date();
@@ -239,11 +235,11 @@ const index = () => {
               />
               <span
                 className={`"flex items-center font-medium text-red-500 text-xs mt-1 transition duration-150 ease-in-out" ${
-                  errors.matchDateTime ? "opacity-100" : "opacity-0"
+                  errors.eventDateTime ? "opacity-100" : "opacity-0"
                 }`}
               >
-                {errors.matchDateTime
-                  ? errors.matchDateTime.message
+                {errors.eventDateTime
+                  ? errors.eventDateTime.message
                   : "Champs requis"}
               </span>
             </div>

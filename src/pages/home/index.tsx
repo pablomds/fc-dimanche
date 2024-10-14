@@ -9,7 +9,7 @@ const index = () => {
 
   return (
     <section
-      className="bg-cover bg-center h-screen"
+      className="bg-cover bg-center h-screen select-none"
       style={{ backgroundImage: `url(${backgroundImageHomePageSvg})` }}
     >
       <div className="flex flex-col justify-center items-center h-screen container mx-auto px-4">

@@ -1,16 +1,26 @@
-import { addDocumentToCollection, deleteDocumentFromCollection  } from "../database/functions";
+import { addDocumentToCollection, getDataFromCollection, deleteDocumentFromCollection, updateDocumentToCollection  } from "../database/functions";
 import { COLLECTION } from "../database/collection";
 // import { utils } from "../utils/utils";
 import { functions } from '../database/firebase';
 import { httpsCallable } from 'firebase/functions';
 import _ from "lodash";
-
-export const createMatch = async (match: any): Promise<string> => (await addDocumentToCollection(COLLECTION.MATCHS, match));
+import { Match } from "../models/Match";
 
 type EmailConfirmationResponse = {
-    success: boolean;
-    message?: string;
-  };
+  success: boolean;
+  message?: string;
+};
+
+export const getMatch = async(matchId: string):Promise<Match> => {
+  const match = await getDataFromCollection(COLLECTION.MATCHES, matchId);
+  return Match.fromDb(match);
+};
+
+export const createMatch = async (match: any): Promise<string> => (await addDocumentToCollection(COLLECTION.MATCHES, match));
+
+export const updateMatch = async (matchId: string, match: Match): Promise<void> => (await updateDocumentToCollection(COLLECTION.MATCHES, matchId, match.toDb()));
+
+export const deleteMatch = async (matchId: string): Promise<void> => (await deleteDocumentFromCollection(COLLECTION.MATCHES, matchId));
 
 export const sendEmailConfirmation = async ({
   email,
@@ -49,5 +59,3 @@ export const sendEmailConfirmation = async ({
     throw error;
   }
 };
-  
-export const deleteMatch = async (matchId: string): Promise<void> => (await deleteDocumentFromCollection(COLLECTION.MATCHS, matchId))

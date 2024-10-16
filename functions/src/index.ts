@@ -26,13 +26,14 @@ export const sendAppointmentConfirmation = functions.https.onCall(async (data: A
 
   const msg: any = {
     to: email,
-    from: 'pablosouza1998@hotmail.com', // Your verified sender email
+    from: { name: "FC Dimanche", email: 'fc-dimanche-squad@hotmail.com'}, 
     dynamic_template_data: {
+      email: email,
+      name: name,
       matchDate: matchDate,
       matchTime: matchTime,
       matchLocation: matchLocation,
-      name: name,
-      confirmationLink: confirmationLink
+      confirmationLink: confirmationLink,
     },
     template_id: 'd-9193aeac4a03463aae12211cc8b2b1c9'
   };
@@ -40,18 +41,15 @@ export const sendAppointmentConfirmation = functions.https.onCall(async (data: A
   try {
     // Send the email
     await sgMail.send(msg);
-    console.log("Email sent successfully to:", email);
     return { success: true, message: "Confirmation email sent" };
   } catch (error: unknown) {
     // Checking if the error is an instance of Error
     if (error instanceof Error) {
-      console.error("Error sending email:", error.message);
       throw new functions.https.HttpsError(
         "internal",
         "Error sending email: " + error.message
       );
     } else {
-      console.error("Error sending email:", error);
       throw new functions.https.HttpsError(
         "internal",
         "An unexpected error occurred while sending email."

@@ -20,27 +20,26 @@ const confirmation = () => {
   const [isMatchNotFound, setIsMatchNotFound] = useState<boolean>(false);
   const [isEventDatePassed, setIsEventDatePassed] = useState<boolean>(false);
   const [match, setMatch] = useState<Match>();
-  const inputRef = useRef<HTMLInputElement>(null); // Typing the ref as HTMLInputElement
-  const location = useLocation();  // Hook to access URL
+  const inputRef = useRef<HTMLInputElement>(null);
+  const location = useLocation();
 
   const navigate = useNavigate();
 
   const handleCopy = () => {
     const input = inputRef.current;
     if (!input) return;
-    input.select(); // Select the text in the input
-    input.setSelectionRange(0, 99999); // For mobile devices
+    input.select();
+    input.setSelectionRange(0, 99999); 
 
     try {
-        navigator.clipboard.writeText(input.value) // Copy the text to clipboard
-        setIsHighlighted(true)
+        navigator.clipboard.writeText(input.value);
+        setIsHighlighted(true);
     } catch (error) {
-        console.error("Erreur lors de la copie : ", error)
+        console.error("Erreur lors de la copie : ", error);
     }
   };
 
   const handleShare = async () => {
-    // Check if the Web Share API is supported
     if (navigator.share) {
       try {
         await navigator.share({
@@ -48,9 +47,10 @@ const confirmation = () => {
           text: "Prêt à taper dans le ballon ? Rejoins-nous pour un match de foot entre amis.",
           url: invitationLink, 
         });
-        console.log("Content shared successfully!");
+        
+        if (import.meta.env.VITE_ENV === 'dev') console.log("Content shared successfully!");
       } catch (error) {
-        console.error("Error sharing content:", error);
+        if (import.meta.env.VITE_ENV === 'dev') console.error("Error sharing content:", error);
       }
     } else {
       alert("Ton navigateur ne supporte pas l'option de partage.");
@@ -186,7 +186,7 @@ const confirmation = () => {
             )}
           {match?.isConfirmed && (
             <div className="flex flex-col bg-[#D9D9D9]/30 border-[#D9D9D9] border-solid border-2 w-full rounded-lg">
-              <div className="h-14 sm:h-14 md:h-14 lg:h-20 flex items-center space-x-2 px-2 transition duration-150 ease-in-out hover:text-green-500 cursor-pointer">
+              <div className="h-14 sm:h-14 md:h-14 lg:h-20 flex items-center space-x-2 px-2 transition duration-150 ease-in-out hover:text-green-500 cursor-pointer select-none">
                 <IoIosShareAlt className="h-8 w-8 md:w-10 md:h-10 lg:w-14 lg:h-14" />
                 <span onClick={handleShare} className="text-xs sm:text-sm md:text-base lg:text-xl font-medium">
                   Partager

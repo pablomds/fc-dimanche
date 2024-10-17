@@ -48,3 +48,8 @@ export default tseslint.config({
   },
 })
 ```
+## Expanding the ESLint configuration
+
+Remove all branches that are not presented in remote anymore: 
+
+- `git fetch -p && git branch -vv | awk '/: gone]/{print $1}' | xargs git branch -d`

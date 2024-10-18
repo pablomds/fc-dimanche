@@ -105,12 +105,10 @@ export const addDocumentToCollection = async (collectionName: COLLECTION, dataTo
     
 };
 
-export const updateDocumentToCollection = async (collectionName: string, dataToUpdateId: string, dataToUpdate: any) => {
+export const updateDocumentToCollection = async (collectionName: string, dataToUpdateId: string, dataToUpdate: any):Promise<void> => {
     dataToUpdate.updated_date = utils.getUnixTimeStamp(new Date());
-    console.log('-->',dataToUpdate)
     const docRefToUpdate = doc(db, collectionName, dataToUpdateId);
     await updateDoc(docRefToUpdate, dataToUpdate);
-
 };
 
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { getMatch, updateMatch } from '../../controllers/matchControllers';
+import { getMatch, updateMatch, sendEmailCalendarInvitation } from '../../controllers/matchControllers';
 import { object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { utils } from '../../utils/utils';
@@ -46,7 +46,7 @@ const invitation: React.FC = () => {
         resolver: yupResolver(invitedPlayersSchema),
         defaultValues: {
           willBePresent: WILL_BE_PRESENT.YES,
-          email: '', // Initialize email as an empty string
+          email: '', 
         },
       });
 
@@ -72,6 +72,18 @@ const invitation: React.FC = () => {
           updatedMatch?.invitedPlayers.push(newInvitedPlayer);
           if (!updatedMatch || !match.id) return
           await updateMatch(match.id, updatedMatch)
+          if(newInvitedPlayer.email) {
+            await sendEmailCalendarInvitation({
+              organizerEmail: updatedMatch.email,
+              organizerName: updatedMatch.name,
+              attendeeName: newInvitedPlayer.name,
+              attendeeEmail: newInvitedPlayer.email,
+              matchLocation: currentMatch.eventLocation,
+              matchTime: utils.formatUnixTimeStampToHours(currentMatch.eventDateTime),
+              matchDate: utils.formatUnixTimeStampToHours(currentMatch.eventDateTime),
+              matchDateUnixTimeStamp: currentMatch.eventDateTime
+            })
+          }
           setIsUserAddedSuccessfully(true);
         } catch (error) {
           if (import.meta.env.VITE_ENV === 'dev') console.log("Something went wrong:", error);

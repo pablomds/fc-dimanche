@@ -1,20 +1,25 @@
 import './App.css';
 import { Routes, Route } from 'react-router-dom';
-import Home from './pages/home';
-import Match from './pages/matchs';
-import MatchConfirmation from './pages/matchs/confirmation';
-import MatchInvitation from './pages/matchs/invitation';
-import NotFound from './pages/notFound'
+import { lazy, Suspense } from 'react';
+const HomePage = lazy(() => import('./pages/Home/HomePage'));
+const MatchCreationPage = lazy(() => import('./pages/Matchs/CreationPage'));
+const MatchConfirmationPage = lazy(() => import('./pages/Matchs/ConfirmationPage'));
+const MatchInvitationPage = lazy(() => import('./pages/Matchs/InvitationPage'));
+const MatchLoginManagementPage = lazy(() => import('./pages/Matchs/LoginManagementPage'));
+const MatchManagementPage = lazy(() => import('./pages/Matchs/ManagementPage'));
+const NotFoundPage = lazy(() => import('./pages/NotFound'));
 
 function App() {
 
   return (
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/match/creation" element={<Match />} />
-        <Route path="/match/confirmation" element={<MatchConfirmation />} />
-        <Route path="/match/invitation" element={<MatchInvitation />} />
-        <Route path="*" element={<NotFound />} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="/match/creation" element={<MatchCreationPage />} />
+        <Route path="/match/confirmation" element={<MatchConfirmationPage />} />
+        <Route path="/match/invitation" element={<MatchInvitationPage />} />
+        <Route path="/match/management/login" element={<MatchLoginManagementPage />} />
+        <Route path="/match/management/:id" element={<MatchManagementPage />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
   );
 };

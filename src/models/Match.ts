@@ -25,6 +25,7 @@ export class Match extends Database {
     public email: string;
     public isConfirmed: boolean;
     public invitedPlayers: invitedPlayer[] = []
+    public accessKey: string = '';
 
     constructor(data: {
         numberOfPlayers: number;
@@ -32,6 +33,7 @@ export class Match extends Database {
         eventDateTime: Date; 
         name: string;
         email: string;
+        accessKey: string;
     }) {
         super();
         this.numberOfPlayers = data.numberOfPlayers;
@@ -40,6 +42,7 @@ export class Match extends Database {
         this.name = data.name;
         this.email = data.email;
         this.isConfirmed = false; 
+        this.accessKey = data.accessKey;
     }
 
     toDb(): any {
@@ -53,6 +56,7 @@ export class Match extends Database {
             created_date: this.createdDate,
             updated_date: this.updatedDate,
             is_active: this.isActive,
+            access_key: this.accessKey,
             invited_players: this.invitedPlayers.length ?  _.map(this.invitedPlayers, invitedPlayer => (
                 {
                     will_be_present: invitedPlayer.willBePresent,
@@ -74,6 +78,7 @@ export class Match extends Database {
             name: objDb.name, 
             email: objDb.email, 
             isConfirmed: objDb.is_confirmed,
+            accessKey: objDb.access_key
         };
 
         let match = new Match(matchObj);
@@ -82,6 +87,7 @@ export class Match extends Database {
         match.createdDate = objDb.created_date;
         match.updatedDate = objDb.updated_date;
         match.isActive = objDb.is_active;
+        match.accessKey = objDb.access_key;
         match.invitedPlayers = objDb.invited_players.length ? _.map(objDb.invited_players, invited_player  => ({
             willBePresent: invited_player.will_be_present,
             name: invited_player.name,

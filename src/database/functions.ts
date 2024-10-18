@@ -12,7 +12,6 @@ export const getDataFromCollection = async (collectionName: COLLECTION, dataId: 
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) return { ...docSnap.data(), id: docRef.id };   
     return {}; 
-    
 };
 
 export const getAllDataFromCollectionCreatedByUser = async (collectionName: COLLECTION, userId: string) => {
@@ -51,11 +50,11 @@ export const getAllDataFromCollectionWithWhereArray = async (collectionName: COL
         arrayData.push({...doc.data(), id: doc.id})
     })
     
-    if (arrayData.length === 1) {
-        return arrayData[0];
+    if (arrayData.length) {
+        return arrayData;
     }
 
-    return arrayData
+    return []
 };
 
 export const getAllDataFromCollectionWithWhereArrayContains = async (collectionName: COLLECTION, whereArray: any) => {

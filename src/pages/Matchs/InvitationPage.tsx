@@ -15,7 +15,7 @@ import { MdEventBusy } from "react-icons/md";
 
 
 
-const invitation: React.FC = () => {
+const InvitationPage: React.FC = () => {
 
   const [isMatchNotFound, setIsMatchNotFound] = useState<boolean>(false);
   const [isEventDatePassed, setIsEventDatePassed] = useState<boolean>(false);
@@ -306,4 +306,4 @@ const invitation: React.FC = () => {
   );
 }
 
-export default invitation;
+export default InvitationPage;

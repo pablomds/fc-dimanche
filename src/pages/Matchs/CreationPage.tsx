@@ -14,10 +14,9 @@ import { Match } from '../../models/Match';
 import { FaArrowDownLong } from "react-icons/fa6";
 import { MdMarkEmailUnread } from "react-icons/md";
 import { utils } from '../../utils/utils';
+import { v4 as uuidv4 } from 'uuid';
 
-
-
-const index = () => {
+const CreationPage = () => {
 
   const [isMatchCreated, setIsMatchCreated] = useState<boolean>(false);
   const bottomRef = useRef<HTMLDivElement | null>(null);
@@ -103,7 +102,9 @@ const index = () => {
 
   const onSubmit = async (data: MatchValues) => {
 
-    let newMatch = new Match(data);
+    const object = { ...data, accessKey: uuidv4().replace(/-/g, '').slice(0, 10) };
+
+    let newMatch = new Match(object);
 
     try {
 
@@ -333,7 +334,7 @@ const index = () => {
                   htmlFor="email"
                   className="text-[#827C7C] text-sm font-medium transition-all duration-300 ease-in-out group-focus-within:text-[#04100D]"
                 >
-                  MAIL DE L'ORGANISATEUR :
+                  EMAIL DE L'ORGANISATEUR :
                 </label>
                 <input
                   type="email"
@@ -385,4 +386,4 @@ const index = () => {
   );
 }
 
-export default index
+export default CreationPage;

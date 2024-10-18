@@ -13,9 +13,9 @@ import { TbCalendarClock } from "react-icons/tb";
 
 
 
-const confirmation = () => {
+const ConfirmationPage = () => {
+  
   const [isHighlighted, setIsHighlighted] = useState<boolean>(false);
-  // const [isLoading, setIsLoading] = useState<boolean>(false);
   const [invitationLink, setInvitationLink] = useState<string>("");
   const [isMatchNotFound, setIsMatchNotFound] = useState<boolean>(false);
   const [isEventDatePassed, setIsEventDatePassed] = useState<boolean>(false);
@@ -218,4 +218,4 @@ const confirmation = () => {
   );
 };
 
-export default confirmation
+export default ConfirmationPage;

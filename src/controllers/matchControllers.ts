@@ -1,4 +1,4 @@
-import { addDocumentToCollection, getDataFromCollection, deleteDocumentFromCollection, updateDocumentToCollection  } from "../database/functions";
+import { addDocumentToCollection, getDataFromCollection, deleteDocumentFromCollection, updateDocumentToCollection, getAllDataFromCollectionWithWhereArray  } from "../database/functions";
 import { COLLECTION } from "../database/collection";
 // import { utils } from "../utils/utils";
 import { functions } from '../database/firebase';
@@ -14,6 +14,27 @@ type EmailConfirmationResponse = {
 export const getMatch = async(matchId: string):Promise<Match> => {
   const match = await getDataFromCollection(COLLECTION.MATCHES, matchId);
   return Match.fromDb(match);
+};
+
+export const getMatchWithEmailAndKeyAccess = async (
+  matchEmail: string,
+  accessKey: string
+): Promise<Match | null> => {
+  const whereArray = { property: "access_key", propertyValue: accessKey };
+  const allMatchesFromDb = await getAllDataFromCollectionWithWhereArray(
+    COLLECTION.MATCHES,
+    whereArray
+  );
+
+  if (allMatchesFromDb.length) {
+    const matches = _.map(allMatchesFromDb, (match) => Match.fromDb(match));
+    const foundMatch = _.find(matches, {
+      email: matchEmail,
+      accessKey: accessKey,
+    });
+    return foundMatch ? foundMatch : null;
+  }
+  return null;
 };
 
 export const createMatch = async (match: any): Promise<string> => (await addDocumentToCollection(COLLECTION.MATCHES, match));

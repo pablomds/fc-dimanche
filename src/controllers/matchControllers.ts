@@ -59,3 +59,46 @@ export const sendEmailConfirmation = async ({
     throw error;
   }
 };
+
+export const sendEmailCalendarInvitation = async ({
+  organizerEmail,
+  organizerName,
+  attendeeName,
+  attendeeEmail,
+  matchDate,
+  matchDateUnixTimeStamp,
+  matchTime,
+  matchLocation,
+}: {
+  organizerEmail: string;
+  organizerName: string;
+  attendeeName: string;
+  attendeeEmail: string;
+  matchDate: string;
+  matchDateUnixTimeStamp: number;
+  matchTime: string;
+  matchLocation: string;
+}): Promise<EmailConfirmationResponse> => {
+  const sendInvitationToCalendar = httpsCallable(
+    functions,
+    "sendInvitationToCalendar"
+  );
+
+  try {
+    const response = await sendInvitationToCalendar({
+      organizerEmail,
+      organizerName,
+      attendeeName,
+      attendeeEmail,
+      matchLocation,
+      matchTime,
+      matchDate,
+      matchDateUnixTimeStamp,
+    });
+
+    return response.data as EmailConfirmationResponse;
+  } catch (error) {
+    console.log("Error sending email:", error);
+    throw error;
+  }
+};

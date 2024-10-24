@@ -1,11 +1,10 @@
 import Card from '../../components/Card';
-import { useForm, Controller } from 'react-hook-form';
-import { object, string, number, date, InferType } from 'yup';
+import { useForm } from 'react-hook-form';
+import { object, string, InferType } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import SubmitButton  from '../../components/Buttons/SubmitButton'
 import { getMatchWithEmailAndKeyAccess } from '../../controllers/matchControllers';
 import { signInUserAnonymously } from '../../database/auth';
-import { useNavigate } from 'react-router-dom';
 
 const LoginManagementPage = () => {
 
@@ -18,7 +17,6 @@ const LoginManagementPage = () => {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    control,
   } = useForm({
     resolver: yupResolver(matchManagementSchema),
     defaultValues: {},

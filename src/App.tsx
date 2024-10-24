@@ -1,6 +1,7 @@
 import './App.css';
 import { Routes, Route } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
+import PageLoader from './components/Loader/PageLoader';
 const HomePage = lazy(() => import('./pages/Home/HomePage'));
 const MatchCreationPage = lazy(() => import('./pages/Matchs/CreationPage'));
 const MatchConfirmationPage = lazy(() => import('./pages/Matchs/ConfirmationPage'));
@@ -12,6 +13,7 @@ const NotFoundPage = lazy(() => import('./pages/NotFound'));
 function App() {
 
   return (
+    <Suspense fallback={<PageLoader />}>
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/match/creation" element={<MatchCreationPage />} />
@@ -21,6 +23,7 @@ function App() {
         <Route path="/match/management/:id" element={<MatchManagementPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
+    </Suspense>
   );
 };
 

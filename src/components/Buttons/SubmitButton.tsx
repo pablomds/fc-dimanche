@@ -1,4 +1,3 @@
-
 interface IndexProps {
   isSubmitting: boolean;
   buttonText: string;
@@ -10,7 +9,7 @@ const SubmitButton: React.FC<IndexProps> = ({ isSubmitting, buttonText, classNam
     <div className={`p-4 h-20 w-full md:w-72 md:h-20 flex items-center justify-center ${className}`}>
       <button
         type="submit"
-        className="drop-shadow-2xl rounded-full h-full w-full text-xl text-[#FFFFFF] bg-gradient-to-r from-[#3B7214] via-[#5B8E2A] to-[#7AAB40] font-semibold transition ease-in-out delay-150 md:hover:-translate-y-1 md:hover:scale-110 hover:bg-indigo-500 duration-300"
+        className="drop-shadow-2xl rounded-full h-full w-full text-xl text-[#FFFFFF] bg-gradient-to-r from-[#3B7214] via-[#5B8E2A] to-[#7AAB40] font-semibold transition ease-in-out delay-150 md:hover:-translate-y-1 md:hover:scale-110 duration-300 hover:bg-indigo-500"
       >
         {isSubmitting ? (
           <div className="flex space-x-2 justify-center items-center">

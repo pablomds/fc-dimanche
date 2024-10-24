@@ -19,6 +19,7 @@ import { v4 as uuidv4 } from 'uuid';
 const CreationPage = () => {
 
   const [isMatchCreated, setIsMatchCreated] = useState<boolean>(false);
+  const [isEmailSent, setIsEmailSent] = useState<boolean>(false);
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const [isInScrollZone, setIsInScrollZone] = useState(false);
   const [emailSettings, setEmailSettings] = useState<any>();
@@ -39,7 +40,7 @@ const CreationPage = () => {
     eventDateTime: date()
       .required("La date et l'heure sont requis.")
       .test("is-future-date", "La date doit être dans le futur.", (value) => {
-        return value ? value > new Date() : false; // Check if the date is in the future
+        return value ? value > new Date() : false; 
       }),
     name: string().required("Un nom est requis.").min(1, "Le nom doit contenir au moins 1 caractère.").max(50, "Le nom doit contenir moins de 50 caractères").transform(value => value.trim()),
     email: string()
@@ -51,7 +52,7 @@ const CreationPage = () => {
 
   const scrollToBottom = () => {
     if (bottomRef.current) {
-      bottomRef.current.scrollIntoView({ behavior: 'smooth' }); // Scroll smoothly to the bottom
+      bottomRef.current.scrollIntoView({ behavior: 'smooth' }); 
     }
   };
   
@@ -62,7 +63,6 @@ const CreationPage = () => {
   const roundUpToNext15 = (date: Date) => {
     const minutes = date.getMinutes();
     const roundedMinutes = Math.ceil(minutes / 15) * 15;
-    // If rounded minutes equals 60, we reset it to 0 and increment the hour
     return roundedMinutes === 60 
         ? setHours(setMinutes(date, 0), date.getHours() + 1) 
         : setMinutes(setHours(date, date.getHours()), roundedMinutes);
@@ -87,6 +87,7 @@ const CreationPage = () => {
 
       if (!emailSettings.email) return;
       const response = await sendEmailConfirmation(emailSettings);
+      setIsEmailSent(true);
 
       if (import.meta.env.VITE_ENV === 'dev') {
         if (response.success) {
@@ -187,15 +188,25 @@ const CreationPage = () => {
                   ⚽ MATCH CRÉÉ AVEC SUCCÈS
                 </h1>
                 <p className="text-sm lg:text-base text-center">
-                  Un email de confirmation vous a été envoyé. Merci de vérifier
-                  votre boîte de réception. Si vous ne l'avez pas reçu,{" "}
-                  <button
-                    onClick={resendConfirmationEmail}
-                    className="text-blue-600 underline"
-                  >
-                    cliquez ici
-                  </button>{" "}
-                  pour renvoyer l'email.
+                  {!isEmailSent ? (
+                    <>
+                      Un email de confirmation t'a été envoyé. Merci de vérifier
+                      ta boîte de réception. Si tu ne l'as pas reçu,
+                      <button
+                        onClick={resendConfirmationEmail}
+                        className="text-blue-600 underline"
+                      >
+                        clique ici{" "}
+                      </button>{" "}
+                      pour renvoyer l'email.
+                    </>
+                  ) : (
+                    <>
+                      Un email de confirmation t'a été envoyé. Merci de vérifier
+                      ta boîte de réception. Si tu ne l'as pas reçu, patiente un
+                      moment ou vérifie dans tes spams.
+                    </>
+                  )}
                 </p>
               </div>
             </div>

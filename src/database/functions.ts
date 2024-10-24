@@ -7,11 +7,11 @@ import { COLLECTION } from "./collection"
 import { getStorage, ref, listAll, uploadBytesResumable, getDownloadURL, deleteObject  } from "firebase/storage"
 import { utils } from "../utils/utils"
 
-export const getDataFromCollection = async (collectionName: COLLECTION, dataId: string) => {
+export const getDataFromCollection = async (collectionName: COLLECTION, dataId: string):Promise<any | null> => {
     const docRef = doc(db, collectionName, dataId);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) return { ...docSnap.data(), id: docRef.id };   
-    return {}; 
+    return null; 
 };
 
 export const getAllDataFromCollectionCreatedByUser = async (collectionName: COLLECTION, userId: string) => {

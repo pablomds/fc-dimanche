@@ -25,24 +25,24 @@ export class Match extends Database {
     public email: string;
     public isConfirmed: boolean;
     public invitedPlayers: invitedPlayer[] = []
-    public accessKey: string = '';
+    public accessKey: string = "";
 
-    constructor(data: {
-        numberOfPlayers: number;
-        eventLocation: string;
-        eventDateTime: Date; 
-        name: string;
-        email: string;
-        accessKey: string;
+    constructor(data?: {
+        numberOfPlayers?: number;
+        eventLocation?: string;
+        eventDateTime?: Date; 
+        name?: string;
+        email?: string;
+        accessKey?: string;
     }) {
         super();
-        this.numberOfPlayers = data.numberOfPlayers;
-        this.eventLocation = data.eventLocation;
-        this.eventDateTime = utils.getUnixTimeStamp(data.eventDateTime);
-        this.name = data.name;
-        this.email = data.email;
+        this.numberOfPlayers = data?.numberOfPlayers ?? 1;
+        this.eventLocation = data?.eventLocation ?? "Unknown location";
+        this.eventDateTime = data?.eventDateTime ? utils.getUnixTimeStamp(data?.eventDateTime) : utils.getUnixTimeStamp(new Date()) ;
+        this.name = data?.name ?? "Unknown";
+        this.email = data?.email ?? "Anonymous";
         this.isConfirmed = false; 
-        this.accessKey = data.accessKey;
+        this.accessKey = data?.accessKey ?? "";
     }
 
     toDb(): any {
@@ -88,14 +88,15 @@ export class Match extends Database {
         match.updatedDate = objDb.updated_date;
         match.isActive = objDb.is_active;
         match.accessKey = objDb.access_key;
-        match.invitedPlayers = objDb.invited_players.length ? _.map(objDb.invited_players, invited_player  => ({
-            willBePresent: invited_player.will_be_present,
-            name: invited_player.name,
-            email: invited_player.email || "",
-            createdAt: invited_player.created_at,
-            updatedAt: invited_player.updated_at,
-        })) : []
-
+        if (objDb.invited_players && objDb.invited_players.length) {
+            match.invitedPlayers = _.map(objDb.invited_players, invited_player  => ({
+                willBePresent: invited_player.will_be_present,
+                name: invited_player.name,
+                email: invited_player.email || "",
+                createdAt: invited_player.created_at,
+                updatedAt: invited_player.updated_at,
+            }))
+        }
         return match;
     };
 

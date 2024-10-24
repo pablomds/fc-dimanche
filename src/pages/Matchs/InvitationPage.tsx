@@ -64,12 +64,16 @@ const InvitationPage: React.FC = () => {
           if (!match) return
           const currentMatch = await getMatch(match?.id);
           
+          if (!currentMatch) return
+
           if (willBePresentPlayersArray.length + 1 > currentMatch.numberOfPlayers) {
             setIsMaxCapacity(true);
             return;
           }
           let updatedMatch = _.cloneDeep(match)
+          console.log(updatedMatch)
           updatedMatch?.invitedPlayers.push(newInvitedPlayer);
+          console.log('updatedMatch', updatedMatch)
           if (!updatedMatch || !match.id) return
           await updateMatch(match.id, updatedMatch)
           if(newInvitedPlayer.email) {
@@ -80,7 +84,7 @@ const InvitationPage: React.FC = () => {
               attendeeEmail: newInvitedPlayer.email,
               matchLocation: currentMatch.eventLocation,
               matchTime: utils.formatUnixTimeStampToHours(currentMatch.eventDateTime),
-              matchDate: utils.formatUnixTimeStampToHours(currentMatch.eventDateTime),
+              matchDate: utils.formatUnixTimeStampToDDMMYY(currentMatch.eventDateTime),
               matchDateUnixTimeStamp: currentMatch.eventDateTime
             })
           }
@@ -100,7 +104,7 @@ const InvitationPage: React.FC = () => {
 
           const currentMatch = await getMatch(matchID);
 
-          if (!currentMatch.id) {
+          if (!currentMatch) {
             setIsMatchNotFound(true);
             return;
           };

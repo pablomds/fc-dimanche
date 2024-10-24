@@ -11,9 +11,10 @@ type EmailConfirmationResponse = {
   message?: string;
 };
 
-export const getMatch = async(matchId: string):Promise<Match> => {
+export const getMatch = async(matchId: string):Promise<Match | null> => {
   const match = await getDataFromCollection(COLLECTION.MATCHES, matchId);
-  return Match.fromDb(match);
+  if(match) return Match.fromDb(match);
+  return null;
 };
 
 export const getMatchWithEmailAndKeyAccess = async (

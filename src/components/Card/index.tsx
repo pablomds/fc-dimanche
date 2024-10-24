@@ -1,6 +1,5 @@
 import React from 'react';
 
-
 interface IndexProps {
     children: React.ReactNode;
     className?: string;

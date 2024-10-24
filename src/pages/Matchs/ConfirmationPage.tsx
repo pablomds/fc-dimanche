@@ -10,11 +10,13 @@ import { Match } from '../../models/Match';
 import { useNavigate } from 'react-router-dom';
 import { MdFolderOff } from "react-icons/md";
 import { TbCalendarClock } from "react-icons/tb";
+import PageLoader from "../../components/Loader/PageLoader";
 
 
 
 const ConfirmationPage = () => {
   
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isHighlighted, setIsHighlighted] = useState<boolean>(false);
   const [invitationLink, setInvitationLink] = useState<string>("");
   const [isMatchNotFound, setIsMatchNotFound] = useState<boolean>(false);
@@ -58,10 +60,10 @@ const ConfirmationPage = () => {
   };
 
   useEffect(() => {
-    // setIsLoading(true);
-
+    
     const fetchData = async () => {
       try {
+        setIsLoading(true);
 
         const currentTimestamp = utils.getUnixTimeStamp(new Date());
         const searchParams = location.search;
@@ -74,7 +76,7 @@ const ConfirmationPage = () => {
   
         const match = await getMatch(matchID);
 
-        if (!match.id) {
+        if (!match) {
           setIsMatchNotFound(true);
           return;
         }
@@ -95,7 +97,7 @@ const ConfirmationPage = () => {
       } catch (error) {
         console.error("Erreur lors de la confirmation", error);
       } finally {
-        // setIsLoading(false);
+        setIsLoading(false);
       }
     };
   
@@ -103,6 +105,10 @@ const ConfirmationPage = () => {
     fetchData();
 
   },[])
+
+  if (isLoading) (
+    <PageLoader />
+  )
 
   return (
     <section className="bg-cover bg-center lg:bg-img-match-creation bg-img-match-confirmation-mobile h-screen w-screen overflow-y-hidden">

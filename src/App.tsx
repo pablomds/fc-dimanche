@@ -8,7 +8,7 @@ const MatchConfirmationPage = lazy(() => import('./pages/Matchs/ConfirmationPage
 const MatchInvitationPage = lazy(() => import('./pages/Matchs/InvitationPage'));
 const MatchLoginManagementPage = lazy(() => import('./pages/Matchs/LoginManagementPage'));
 const MatchManagementPage = lazy(() => import('./pages/Matchs/ManagementPage'));
-const NotFoundPage = lazy(() => import('./pages/NotFound'));
+const NotFoundPage = lazy(() => import('./pages/NotFound/NotFoundPage'));
 
 function App() {
 

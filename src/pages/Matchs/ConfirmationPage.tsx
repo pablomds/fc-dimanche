@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import confirmationIconMatchCreationSvg from '../../assets/matchs/ConfirmationIconMatchCreation.svg';
-import { updateMatch, getMatch } from '../../controllers/matchControllers';
+import { updateMatch, getMatch, sendEmailPreviewMatchLink } from '../../controllers/matchControllers';
 import { utils } from '../../utils/utils';
 import { useLocation } from 'react-router-dom';
 import { IoIosShareAlt } from "react-icons/io";
@@ -88,7 +88,12 @@ const ConfirmationPage = () => {
   
         if (!match.isConfirmed) {
           match.isConfirmed = true;
-          await updateMatch(match.id, match)
+          await updateMatch(match.id, match);
+          await sendEmailPreviewMatchLink({
+            email: match.email,
+            name: match.email,
+            previewMatchLink: `${import.meta.env.VITE_BASE_URL}/match/management/${match.id}`
+          })
         } 
 
         setMatch(match);

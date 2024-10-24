@@ -124,3 +124,29 @@ export const sendEmailCalendarInvitation = async ({
     throw error;
   }
 };
+
+export const sendEmailPreviewMatchLink = async ({
+  email, 
+  previewMatchLink, 
+  name,
+} : {
+  email: string,
+  previewMatchLink: string,
+  name: string
+}):Promise<EmailConfirmationResponse> => {
+
+  const sendPreviewMatchLink = httpsCallable(functions, "sendLinkToPreviewMatch");
+  try {
+    const response = await sendPreviewMatchLink({
+      email,
+      name,
+      previewMatchLink
+    });
+
+    return response.data as EmailConfirmationResponse;
+
+  } catch (error) {
+    console.log("Error sending email:", error);
+    throw error;
+  }
+}

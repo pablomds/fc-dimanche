@@ -100,6 +100,35 @@ export const sendAppointmentConfirmation = functions.https.onCall(async (data: A
   }
 });
 
+export const sendLinkToPreviewMatch = functions.https.onCall(async (data:any, context: any) => {
+  const { name, previewMatchLink, email } = data;
+
+  if (!name || !previewMatchLink || !email) throw new functions.https.HttpsError('invalid-argument', 'Missing required fields');
+
+  const msg: any = {
+    to: email, 
+    from: { name: "FC Dimanche", email: FcDimancheEmail},
+    dynamic_template_data: {
+      email: email,
+      name: name,
+      previewMatchLink: previewMatchLink
+    },
+    template_id: 'd-37f219b7383244d2aaf4818b22791540'
+  };
+
+  try {
+    await sgMail.send(msg);
+    return { success: true, message: "Preview Match link sent" };
+  } catch (error) {
+    console.error('Error sending email:', error);
+    if (error instanceof Error) {
+      throw new functions.https.HttpsError("internal", "Error sending email: " + error.message);
+    } else {
+      throw new functions.https.HttpsError("internal", "An unexpected error occurred while sending email.");
+    }
+  }
+})
+
 export const sendInvitationToCalendar = functions.https.onCall(async (data: any, context: any) => {
 
   const { organizerEmail, organizerName, attendeeName, attendeeEmail, matchDate, matchDateUnixTimeStamp, matchTime, matchLocation } = data;

@@ -1,4 +1,42 @@
-# React + TypeScript + Vite
+# FC Dimanche 
+FC Dimanche allows users to create or join games in just a few clicks, thanks to an intuitive app. Users can invite friends directly, discuss match details, and confirm their participation with ease.
+
+Built using React and TypeScript/JavaScript, FC Dimanche ensures a fast, responsive, and interactive user experience. React’s component-based architecture makes the interface easy to navigate and visually engaging, while TypeScript adds reliability and scalability, reducing errors in code and making the app maintainable as it grows. The app is backed by Firebase and Google Cloud Platform (GCP), providing real-time data synchronization, secure authentication, and robust data storage. With Firebase, users receive real-time updates on match changes, confirmations, and cancellations, enhancing team coordination and streamlining the organization of pickup games.
+## Technical Stack 
+FC Dimanche uses React + TypeScript + Vite, Google GCP : Authentication, Database and others cloud functions, Tailwind CSS for styling, and PNPM for package manager.
+## Environment Variables
+
+To run this project locally, you need to set up a few environment variables. Create a `.env.local` file in the root directory and include the following variables:
+
+```plaintext
+VITE_FIREBASE_API_KEY=XXXXXXXX
+VITE_FIREBASE_AUTH_DOMAIN=XXXXXXXX
+VITE_FIREBASE_PROJECT_ID=XXXXXXXX
+VITE_FIREBASE_STORAGE_BUCKET=XXXXXXXX
+VITE_FIREBASE_MESSAGING_SENDER_ID=XXXXXXXX
+VITE_FIREBASE_APP_ID=XXXXXXXX
+VITE_BASE_URL=http://localhost:5173
+VITE_ENV=dev
+```
+Make sure to replace thoses values with real data.
+
+## Run Project Locally
+
+To get started with the project locally, ensure you're in the root project folder (`./fc-dimanche`) and follow these steps:
+
+### Running for the First Time
+
+1. Ensure you are in the root project folder (./fc-dimanche)
+
+2. Install dependencies:
+   ```bash
+   pnpm install
+   ```
+### Running on Development Environment
+  ```bash 
+  pnpm run dev
+  ```
+## React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
